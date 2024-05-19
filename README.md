@@ -1,15 +1,19 @@
-# mk-rss-bot
+# Misskey RSS Bot
 
-To install dependencies:
+Note RSS feed updates to Misskey :mailbox:
 
-```bash
-bun install
-```
+Powered by [Bun](https://bun.sh/).
 
-To run:
+## Deploy
 
-```bash
-bun run index.ts
-```
+1. Create `.env` file
 
-This project was created using `bun init` in bun v1.1.8. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+   ```ps
+   cp .env.example .env
+   ```
+
+2. Build Docker Container
+
+   ```ps
+   docker-compose up --build -d
+   ```
