@@ -1,7 +1,5 @@
 import os from "os";
 
-import config from "../config.json";
-
 function fixLineBreak(text: string) {
   return text.replace("\\n", os.EOL);
 }
@@ -12,8 +10,8 @@ export default async function note(
 ) {
   console.log(`Text:\n` + `${fixLineBreak(text)}`);
 
-  const token = config.token ?? null;
-  const instance = config.instance ?? null;
+  const token = process.env.TOKEN ?? null;
+  const instance = process.env.INSTANCE ?? null;
 
   if (token === null) {
     console.error("Missing token.\n" + "Set token={Your Misskey Token}");

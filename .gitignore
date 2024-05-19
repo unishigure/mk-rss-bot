@@ -176,5 +176,4 @@ dist
 
 # additional
 .vscode
-config.json
 feed.xml

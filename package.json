@@ -3,6 +3,9 @@
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
+    "start": "docker-compose up --build -d",
+    "down": "docker-compose down",
+    "clean": "docker-compose down --rmi all -v",
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {

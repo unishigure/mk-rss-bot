@@ -2,16 +2,15 @@ import { write, file } from "bun";
 import Parser from "rss-parser";
 
 import note from "./note.ts";
-import config from "../config.json";
 
 const FEED_FILE = "feed.xml";
-const FEED_URL = config.feed_url ?? "https://example.com/feed/";
+const FEED_URL = process.env.FEED_URL ?? "https://example.com/feed/";
 
 const parser: Parser = new Parser();
 
 async function getFeedXml() {
   const response = await fetch(FEED_URL).catch((error) => {
-    console.error("Fetch failure.");
+    console.error(`Fetch failure: ${error}`);
     throw error;
   });
   if (response.ok) {
@@ -19,7 +18,7 @@ async function getFeedXml() {
     await write(FEED_FILE, text)
       .then(() => console.log(`Create ${FEED_FILE} success.`))
       .catch((error) => {
-        console.error("Write XML failure.");
+        console.error(`Write XML failure: ${error}`);
         throw error;
       });
   } else {
@@ -35,12 +34,12 @@ async function getNewFeed() {
     const currentXml = await file(FEED_FILE)
       .text()
       .catch((error) => {
-        console.error("Read currentXml failure.");
+        console.error(`Read currentXml failure: ${error}`);
         throw error;
       });
     const currentFeed = (
       await parser.parseString(currentXml).catch((error) => {
-        console.error("Parse currentXml failure.");
+        console.error(`Parse currentXml failure: ${error}`);
         throw error;
       })
     ).items;
@@ -53,12 +52,12 @@ async function getNewFeed() {
     const latestXml = await file(FEED_FILE)
       .text()
       .catch((error) => {
-        console.error("Read latestXml failure.");
+        console.error(`Read latestXml failure: ${error}`);
         throw error;
       });
     const latestFeed = (
       await parser.parseString(latestXml).catch((error) => {
-        console.error("Parse latestXml failure.");
+        console.error(`Parse latestXml failure: ${error}`);
         throw error;
       })
     ).items;
@@ -70,16 +69,16 @@ async function getNewFeed() {
     });
 
     return newFeeds;
-  } catch {
-    console.error("Get new feeds failure.");
-    throw Error;
+  } catch (error) {
+    console.error(`Get new feeds failure: ${error}`);
+    throw error;
   }
 }
 
 function createNote(feed: Parser.Item) {
   const title = feed.title;
   const link = feed.link;
-  const text = `${title}\n` + `${link}\n\n` + `${config.hashtag}`;
+  const text = `${title}\n` + `${link}\n\n` + `${process.env.HASHTAG}`;
   return text;
 }
 
@@ -95,13 +94,13 @@ export default async function checkUpdate() {
     if (feed.length > 0) {
       feed.forEach((f) => {
         const text = createNote(f);
-        note(text, config.visibility);
+        note(text, process.env.VISIBILITY);
       });
     } else {
       console.log("New news not exists.");
     }
     console.log("End to check update news.");
-  } catch {
-    console.error("Check update news failure.");
+  } catch (error) {
+    console.error(`Check update news failure: ${error}`);
   }
 }
