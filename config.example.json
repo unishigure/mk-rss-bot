@@ -1,0 +1,8 @@
+{
+  "feed_url": "https://example.com/feed/",
+  "token": "your_misskey_account_token",
+  "instance": "https://example.com",
+  "visibility": "specified",
+  "hashtag": "#RSS #BOT",
+  "interval_min": 5
+}
