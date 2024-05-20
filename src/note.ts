@@ -8,8 +8,6 @@ export default async function note(
   text: string,
   visibility: string = "specified"
 ) {
-  console.log(`Text:\n` + `${fixLineBreak(text)}`);
-
   const token = process.env.TOKEN ?? null;
   const instance = process.env.INSTANCE ?? null;
 
@@ -45,13 +43,26 @@ export default async function note(
     body: JSON.stringify(body),
   });
 
-  const response = await fetch(request);
-  if (!response.ok) {
-    console.error(
-      `${response.status} : ${response.statusText}\n` +
-        `Instance: ${instance}, Visibility: ${visibility}`
-    );
-  } else {
-    console.log("Note Success.");
-  }
+  return new Promise((resolve, reject) => {
+    fetch(request)
+      .then((response) => {
+        if (!response.ok) {
+          reject(
+            new Error(
+              `Note Failure.\n` +
+                `\t${response.status} : ${response.statusText}\n` +
+                `\tInstance: ${instance}\n` +
+                `\tVisibility: ${visibility}\n` +
+                `\tText:\n` +
+                `\t${fixLineBreak(text)}`
+            )
+          );
+        } else {
+          resolve("Note Success.");
+        }
+      })
+      .catch((error: Error) => {
+        reject(error);
+      });
+  });
 }

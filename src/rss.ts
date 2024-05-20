@@ -82,9 +82,9 @@ function createNote(feed: Parser.Item) {
   return text;
 }
 
-export function init() {
+export async function init() {
   console.log("Init XML.");
-  getFeedXml();
+  await getFeedXml();
 }
 
 export default async function checkUpdate() {
@@ -94,7 +94,9 @@ export default async function checkUpdate() {
     if (feed.length > 0) {
       feed.forEach((f) => {
         const text = createNote(f);
-        note(text, process.env.VISIBILITY);
+        note(text, process.env.VISIBILITY)
+          .then(() => console.log(`Note success: ${f.title}`))
+          .catch((error) => console.error(`Note failure: ${error}`));
       });
     } else {
       console.log("New news not exists.");
